@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080809">
+<title>DARK.exe</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg:#080809;
+  --panel:#101012;
+  --border:#292326;
+  --red:#ff2448;
+  --muted:#88858c;
+  --text:#f5f3f4;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
+}
+body:before {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(#ffffff05 1px,transparent 1px),
+    linear-gradient(90deg,#ffffff05 1px,transparent 1px);
+  background-size:35px 35px;
+  mask-image:linear-gradient(to bottom,black,transparent 85%);
+}
+.app {
+  width:min(100%,650px);
+  margin:auto;
+  padding:25px 18px 40px;
+  position:relative;
+}
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-bottom:22px;
+  border-bottom:1px solid var(--border);
+}
+.logo {
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+.logo span { color:var(--red); }
+.version { color:var(--muted); font-size:11px; }
+.status {
+  display:flex;
+  gap:7px;
+  align-items:center;
+  color:#aaa;
+  font-size:10px;
+  letter-spacing:1px;
+}
+.dot {
+  width:7px;height:7px;border-radius:50%;
+  background:#ff2448;
+  box-shadow:0 0 12px #ff2448;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse {
+  50% { opacity:.35; box-shadow:0 0 3px #ff2448; }
+}
+.hero { padding:32px 0 25px; }
+.eyebrow {
+  color:var(--red);
+  font-size:10px;
+  letter-spacing:3px;
+  font-weight:800;
+}
+h1 {
+  font-size:clamp(35px,9vw,55px);
+  line-height:1;
+  letter-spacing:-2px;
+  margin:13px 0;
+}
+h1 span { color:var(--red); }
+.subtitle {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+  max-width:390px;
+}
+.section-title {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:24px 0 12px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+.section-title small { color:var(--muted); font-weight:400; }
+.modes {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.mode {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:15px 13px;
+  color:var(--text);
+  text-align:left;
+  cursor:pointer;
+  transition:.2s;
+  min-height:75px;
+}
+.mode strong {
+  display:block;
+  font-size:12px;
+  letter-spacing:.5px;
+  margin-bottom:6px;
+}
+.mode small { color:var(--muted); font-size:11px; }
+.mode.active {
+  border-color:var(--red);
+  background:#ff244810;
+  box-shadow:inset 0 0 20px #ff244808;
+}
+.mode.active strong { color:var(--red); }
+label {
+  display:block;
+  margin:22px 0 10px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+textarea {
+  display:block;
+  width:100%;
+  min-height:145px;
+  resize:vertical;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:15px;
+  color:var(--text);
+  outline:none;
+  font:13px/1.7 inherit;
+  font-family:inherit;
+}
+textarea:focus { border-color:#803041; }
+textarea::placeholder { color:#666169; }
+.meta {
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:10px;
+}
+button { font-family:inherit; }
+.primary {
+  margin-top:14px;
+  width:100%;
+  border:1px solid var(--red);
+  background:var(--red);
+  color:white;
+  padding:16px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  cursor:pointer;
+  transition:.2s;
+}
+.primary:active { transform:scale(.98); }
+.primary:hover { box-shadow:0 0 25px #ff244833; }
+.output-box {
+  display:none;
+  margin-top:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:15px;
+}
+.output-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--red);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+.output-text {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:13px;
+  line-height:1.7;
+}
+.copy {
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:8px 11px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:10px;
+}
+.notice {
+  display:none;
+  color:#ff9cab;
+  font-size:11px;
+  margin-top:10px;
+}
+.footer {
+  margin-top:35px;
+  padding-top:17px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1px;
+}
+.footer b { color:var(--red); }
+@media(min-width:500px) {
+  .modes { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div>
+      <div class="logo">DARK<span>.exe</span></div>
+      <div class="version">TEXT ENGINE / V1.0</div>
+    </div>
+    <div class="status"><span class="dot"></span>SYSTEM ONLINE</div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">YOUR PERSONAL TEXT ENGINE</div>
+    <h1>CONTROL<br>YOUR <span>WORDS.</span></h1>
+    <p class="subtitle">
+      Твой текст. Твои правила. Выбери режим и преобразуй сообщение в несколько нажатий.
+    </p>
+  </section>
+
+  <div class="section-title">
+    <span>01 / SELECT MODE</span>
+    <small id="modeCount">01 selected</small>
+  </div>
+
+  <section class="modes">
+    <button class="mode active" data-mode="fix">
+      <strong>FIX TEXT</strong><small>Исправить ошибки</small>
+    </button>
+    <button class="mode" data-mode="short">
+      <strong>SHORT</strong><small>Сократить текст</small>
+    </button>
+    <button class="mode" data-mode="friendly">
+      <strong>FRIENDLY</strong><small>Сделать дружелюбнее</small>
+    </button>
+    <button class="mode" data-mode="formal">
+      <strong>FORMAL</strong><small>Деловой стиль</small>
+    </button>
+    <button class="mode" data-mode="casual">
+      <strong>CASUAL</strong><small>Простой разговорный</small>
+    </button>
+    <button class="mode" data-mode="confident">
+      <strong>CONFIDENT</strong><small>Уверенная подача</small>
+    </button>
+  </section>
+
+  <label for="inputText">02 / INPUT TEXT</label>
+  <textarea id="inputText" maxlength="10000"
+    placeholder="Вставь сюда свой текст..."></textarea>
+  <div class="meta">
+    <span>LOCAL TEXT PROCESSING</span>
+    <span id="counter">0 / 10000</span>
+  </div>
+
+  <button class="primary" id="processBtn">▶ &nbsp; PROCESS TEXT</button>
+  <div class="notice" id="notice"></div>
+
+  <section class="output-box" id="outputBox">
+    <div class="output-head">
+      <span>03 / OUTPUT RESULT</span>
+      <button class="copy" id="copyBtn">COPY TEXT</button>
+    </div>
+    <div class="output-text" id="outputText"></div>
+  </section>
+
+  <footer class="footer">
+    <span>DARK.exe <b>●</b> ACTIVE</span>
+    <span>BUILT FOR CONTROL</span>
+  </footer>
+</main>
+
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  try {
+    tg.setHeaderColor("#080809");
+    tg.setBackgroundColor("#080809");
+  } catch (e) {}
+}
+
+let currentMode = "fix";
+
+const modes = {
+  fix: "Исправить ошибки",
+  short: "Сократить текст",
+  friendly: "Дружелюбный стиль",
+  formal: "Деловой стиль",
+  casual: "Разговорный стиль",
+  confident: "Уверенный стиль"
+};
+
+const input = document.getElementById("inputText");
+const counter = document.getElementById("counter");
+const notice = document.getElementById("notice");
+const outputBox = document.getElementById("outputBox");
+const outputText = document.getElementById("outputText");
+
+document.querySelectorAll(".mode").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".mode").forEach(item =>
+      item.classList.remove("active")
+    );
+    button.classList.add("active");
+    currentMode = button.dataset.mode;
+    document.getElementById("modeCount").textContent =
+      "01 selected";
+    notice.style.display = "none";
+  });
+});
+
+input.addEventListener("input", () => {
+  counter.textContent = input.value.length + " / 10000";
+});
+
+function transformText(text, mode) {
+  let result = text.trim();
+
+  if (mode === "fix") {
+    result = result
+      .replace(/[ \t]+/g, " ")
+      .replace(/ +([,.!?;:])/g, "$1")
+      .replace(/([,.!?;:])(?=[^\s])/g, "$1 ")
+      .replace(/\n{3,}/g, "\n\n");
+    result = result.charAt(0).toLocaleUpperCase("ru-RU") +
+      result.slice(1);
+  }
+
+  if (mode === "short") {
+    result = result
+      .replace(/\b(в общем-то|на самом деле|как бы|короче говоря)\b/gi, "")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  if (mode === "friendly") {
+    result = result.replace(/^/,
+      "Привет! ").replace(/[ \t]+/g, " ");
+  }
+
+  if (mode === "formal") {
+    result = result
+      .replace(/\bпривет\b/gi, "Здравствуйте")
+      .replace(/\bспасибо\b/gi, "Благодарю")
+      .replace(/\bхочу\b/gi, "Хотел бы")
+      .replace(/\bты\b/gi, "Вы")
+      .replace(/\bтебе\b/gi, "Вам")
+      .replace(/\bтвой\b/gi, "Ваш");
+  }
+
+  if (mode === "casual") {
+    result = result
+      .replace(/\bЗдравствуйте\b/gi, "Привет")
+      .replace(/\bБлагодарю\b/gi, "Спасибо")
+      .replace(/[ \t]+/g, " ");
+  }
+
+  if (mode === "confident") {
+    result = result
+      .replace(/\bможет быть\b/gi, "вероятно")
+      .replace(/\bя думаю, что\b/gi, "я считаю, что")
+      .replace(/\bпопробую\b/gi, "сделаю всё возможное, чтобы");
+  }
+
+  return result;
+}
+
+document.getElementById("processBtn").addEventListener("click", () => {
+  const text = input.value.trim();
+
+  if (!text) {
+    notice.textContent = "ВСТАВЬ ТЕКСТ ПЕРЕД ОБРАБОТКОЙ.";
+    notice.style.display = "block";
+    input.focus();
+    return;
+  }
+
+  outputText.textContent = transformText(text, currentMode);
+  outputBox.style.display = "block";
+  notice.style.display = "none";
+  outputBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(outputText.textContent);
+    document.getElementById("copyBtn").textContent = "COPIED ✓";
+  } catch (e) {
+    const range = document.createRange();
+    range.selectNodeContents(outputText);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.getElementById("copyBtn").textContent = "SELECTED";
+  }
+});
+
+</script>
+</body>
+</html>
