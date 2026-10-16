@@ -3,186 +3,394 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080809">
-<title>DARK.exe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09090d">
+<title>DARK.exe — AI Text Lab</title>
+
 <style>
-:root{--bg:#080809;--panel:#101012;--border:#292326;--red:#ff2448;--muted:#99949b;--text:#f5f3f4}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
-.app{width:min(100%,760px);margin:auto;padding:25px 18px 40px}
-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--border)}
-.logo{font-size:22px;font-weight:900;letter-spacing:2px}.logo span,h1 span{color:var(--red)}
-.sub{font-size:11px;color:var(--muted);margin-top:5px}
-.status{font-size:10px;color:var(--muted)}
-.hero{padding:32px 0 25px}
-.eyebrow{color:var(--red);font-size:10px;letter-spacing:3px;font-weight:800}
-h1{font-size:clamp(36px,9vw,55px);line-height:1;letter-spacing:-2px;margin:13px 0}
-.desc{font-size:13px;color:var(--muted);line-height:1.7}
-.heading{margin:25px 0 12px;font-size:11px;font-weight:800;letter-spacing:1.5px}
-.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.mode{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:14px 12px;text-align:left;color:var(--text);cursor:pointer;min-height:72px}
-.mode strong{display:block;font-size:12px;margin-bottom:6px}
-.mode small{color:var(--muted);font-size:11px}
-.mode.active{border-color:var(--red);background:#ff244810}
-.mode.active strong{color:var(--red)}
-label{display:block;margin:23px 0 10px;font-size:11px;font-weight:800;letter-spacing:1.5px}
-textarea{width:100%;min-height:150px;resize:vertical;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:15px;color:var(--text);outline:none;font:14px/1.7 inherit;font-family:inherit}
-textarea:focus{border-color:var(--red)}
-textarea::placeholder{color:#6f6971}
-.meta{display:flex;justify-content:space-between;gap:10px;margin-top:8px;color:var(--muted);font-size:10px}
-.primary{margin-top:15px;width:100%;padding:16px;border:0;border-radius:8px;background:var(--red);color:white;font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer}
-.primary:disabled{opacity:.6;cursor:wait}
-.output{display:none;margin-top:20px;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:15px}
-.output-head{display:flex;align-items:center;justify-content:space-between;color:var(--red);font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
-.result{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.7}
-.copy{padding:8px 11px;background:transparent;border:1px solid var(--border);border-radius:6px;color:white;cursor:pointer}
-.notice{display:none;color:#ff9cab;font-size:12px;line-height:1.6;margin-top:12px}
-footer{margin-top:35px;border-top:1px solid var(--border);padding-top:18px;color:var(--muted);font-size:10px;letter-spacing:1px}
-@media(min-width:520px){.modes{grid-template-columns:repeat(3,minmax(0,1fr))}}
+:root {
+  color-scheme: dark;
+  --bg: #09090d;
+  --panel: #14141d;
+  --line: #30303e;
+  --text: #f5f5fb;
+  --muted: #a0a0b5;
+  --accent: #a78bfa;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 15% 0%, #281743, transparent 45%), var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+.wrap {
+  width: min(1000px, calc(100% - 28px));
+  margin: auto;
+  padding: 32px 0 50px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 38px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #a78bfa, #6d28d9);
+  font-size: 22px;
+  font-weight: 900;
+}
+h1 { font-size: 19px; margin: 0; letter-spacing: 2px; }
+.small, .muted { color: var(--muted); font-size: 12px; }
+h2 {
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin: 10px 0;
+}
+.hero { margin-bottom: 25px; }
+.hero p { color: var(--muted); }
+.eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: 800;
+}
+.panel {
+  background: #14141df5;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 22px;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+select, textarea, .result {
+  width: 100%;
+  background: #0b0b12;
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 12px;
+}
+select {
+  width: min(100%, 300px);
+  padding: 11px;
+  font: inherit;
+}
+textarea {
+  min-height: 190px;
+  padding: 15px;
+  resize: vertical;
+  outline: none;
+  font: 14px/1.7 ui-monospace, monospace;
+}
+textarea:focus, select:focus { border-color: var(--accent); }
+textarea::placeholder { color: #707085; }
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 2px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+button {
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #222230;
+  color: white;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+button.primary {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  border-color: #8b5cf6;
+}
+button:disabled { opacity: .6; cursor: wait; }
+.resultHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 10px;
+}
+.result {
+  min-height: 125px;
+  padding: 15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 14px/1.7 ui-monospace, monospace;
+}
+.empty { color: #77778b; }
+#error {
+  display: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #703444;
+  background: #29131a;
+  color: #fecdd3;
+  font-size: 13px;
+}
+#error.show { display: block; }
+#status { color: var(--muted); font-size: 12px; }
+footer {
+  margin-top: 18px;
+  text-align: center;
+  color: #707085;
+  font-size: 11px;
+}
+@media(max-width:600px) {
+  .wrap { padding-top: 20px; }
+  .panel { padding: 14px; }
+  header { margin-bottom: 25px; }
+  select { width: 100%; }
+  .actions button { flex: 1; }
+}
 </style>
 </head>
+
 <body>
-<main class="app">
-<header>
-  <div><div class="logo">DARK<span>.exe</span></div><div class="sub">AI TEXT ENGINE / V2.0</div></div>
-  <div class="status" id="status">ПОДКЛЮЧЕНИЕ К ИИ...</div>
-</header>
+<main class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">D.</div>
+      <div>
+        <h1>DARK.exe</h1>
+        <div class="small">AI TEXT LAB / VERSION 2.0</div>
+      </div>
+    </div>
+    <div id="status">Проверяем API…</div>
+  </header>
 
-<section class="hero">
-  <div class="eyebrow">YOUR PERSONAL TEXT ENGINE</div>
-  <h1>CONTROL<br>YOUR <span>WORDS.</span></h1>
-  <p class="desc">Исправляй ошибки, полностью переписывай текст и меняй его стиль с помощью ИИ.</p>
-</section>
+  <section class="hero">
+    <div class="eyebrow">YOUR TEXT. YOUR RULES.</div>
+    <h2>Прокачай любой текст.</h2>
+    <p>Исправляй ошибки, меняй стиль и добавляй юмор с помощью ИИ.</p>
+  </section>
 
-<div class="heading">01 / ВЫБЕРИ РЕЖИМ</div>
-<section class="modes" id="modes">
-<button class="mode active" data-mode="fix"><strong>FIX TEXT</strong><small>Исправить ошибки</small></button>
-<button class="mode" data-mode="rewrite"><strong>REWRITE</strong><small>Полностью переписать</small></button>
-<button class="mode" data-mode="short"><strong>SHORT</strong><small>Сделать короче</small></button>
-<button class="mode" data-mode="friendly"><strong>FRIENDLY</strong><small>Дружелюбно</small></button>
-<button class="mode" data-mode="formal"><strong>FORMAL</strong><small>Официально</small></button>
-<button class="mode" data-mode="casual"><strong>CASUAL</strong><small>Разговорный стиль</small></button>
-<button class="mode" data-mode="confident"><strong>CONFIDENT</strong><small>Уверенно и прямо</small></button>
-<button class="mode" data-mode="funny"><strong>FUNNY</strong><small>Сделать смешно</small></button>
-<button class="mode" data-mode="viking"><strong>VIKING</strong><small>Стиль викинга</small></button>
-<button class="mode" data-mode="zombie"><strong>ZOMBIE</strong><small>Стиль зомби</small></button>
-<button class="mode" data-mode="troll"><strong>TROLL</strong><small>Иронично и дерзко</small></button>
-<button class="mode" data-mode="human"><strong>HUMAN</strong><small>Естественно, как человек</small></button>
-</section>
+  <section class="panel">
+    <div class="toolbar">
+      <label for="mode">РЕЖИМ ОБРАБОТКИ</label>
+      <select id="mode">
+        <option value="fix">✦ Исправить ошибки</option>
+        <option value="rewrite">Переписать лучше</option>
+        <option value="short">Сократить</option>
+        <option value="friendly">Дружелюбно</option>
+        <option value="formal">Официально</option>
+        <option value="casual">По-простому</option>
+        <option value="confident">Уверенно</option>
+        <option value="funny">Смешно</option>
+        <option value="viking">Викинг ⚔</option>
+        <option value="zombie">Зомби 🧟</option>
+        <option value="troll">Тролль 😈</option>
+        <option value="human">Как человек</option>
+      </select>
+    </div>
 
-<label for="inputText">02 / ТВОЙ ТЕКСТ</label>
-<textarea id="inputText" maxlength="20000" placeholder="Вставь текст сюда. Можно даже с кучей ошибок..."></textarea>
-<div class="meta"><span>ОБРАБОТКА ЧЕРЕЗ ИИ</span><span id="counter">0 / 20000</span></div>
-<button class="primary" id="processBtn">▶ ОБРАБОТАТЬ ТЕКСТ</button>
-<div class="notice" id="notice"></div>
+    <textarea id="input" maxlength="12000"
+      placeholder="Вставь сюда текст…"></textarea>
 
-<section class="output" id="output">
-<div class="output-head"><span>03 / РЕЗУЛЬТАТ</span><button class="copy" id="copyBtn">КОПИРОВАТЬ</button></div>
-<div class="result" id="result"></div>
-</section>
-<footer>DARK.exe <span style="color:var(--red)">●</span> TEXT TRANSFORMATION SYSTEM</footer>
+    <div class="meta">
+      <span id="counter">0 / 12000</span>
+      <span>⌘ + Enter — обработать</span>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="run">✦ Обработать текст</button>
+      <button id="clear">Очистить</button>
+    </div>
+
+    <div class="resultHead">
+      <strong>РЕЗУЛЬТАТ</strong>
+      <button id="copy">Копировать</button>
+    </div>
+
+    <div class="result empty" id="result">
+      Здесь появится обработанный текст.
+    </div>
+
+    <div id="error"></div>
+  </section>
+
+  <footer>DARK.exe · AI TEXT LAB</footer>
 </main>
 
 <script>
-/*
-  ВАЖНО: здесь должен быть адрес твоего рабочего Vercel API.
-  Если проект называется dark-api-eese, проверь его домен в Vercel.
-*/
-const API_BASE = "https://dark-api-eese.vercel.app";
+(() => {
+  const API = "https://dark-api-eese.vercel.app";
+  const $ = id => document.getElementById(id);
 
-let currentMode = "fix";
-const input = document.getElementById("inputText");
-const counter = document.getElementById("counter");
-const button = document.getElementById("processBtn");
-const notice = document.getElementById("notice");
-const output = document.getElementById("output");
-const result = document.getElementById("result");
+  const input = $("input");
+  const output = $("result");
+  const runButton = $("run");
 
-document.querySelectorAll(".mode").forEach(modeButton => {
-  modeButton.addEventListener("click", () => {
-    document.querySelectorAll(".mode").forEach(b => b.classList.remove("active"));
-    modeButton.classList.add("active");
-    currentMode = modeButton.dataset.mode;
-    notice.style.display = "none";
+  function showError(message) {
+    $("error").textContent = message;
+    $("error").classList.add("show");
+  }
+
+  function clearError() {
+    $("error").textContent = "";
+    $("error").classList.remove("show");
+  }
+
+  async function readResponse(response) {
+    const raw = await response.text();
+
+    try {
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      throw new Error(
+        `Сервер вернул не JSON. HTTP ${response.status}. ` +
+        "Проверь настройки Vercel."
+      );
+    }
+  }
+
+  async function checkAPI() {
+    try {
+      const response = await fetch(`${API}/api/health`);
+      const data = await readResponse(response);
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
+      $("status").textContent =
+        `● API подключён · ${data.model}`;
+      $("status").style.color = "#86efac";
+    } catch (error) {
+      $("status").textContent = "● API недоступен";
+      $("status").style.color = "#fb7185";
+      console.error("Health check:", error);
+    }
+  }
+
+  async function transform() {
+    clearError();
+
+    const text = input.value.trim();
+
+    if (!text) {
+      showError("Сначала введи текст.");
+      input.focus();
+      return;
+    }
+
+    runButton.disabled = true;
+    runButton.textContent = "Обрабатываю…";
+    output.classList.remove("empty");
+    output.textContent = "DARK.exe обрабатывает текст…";
+
+    try {
+      const response = await fetch(`${API}/api/transform`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          mode: $("mode").value
+        })
+      });
+
+      const data = await readResponse(response);
+
+      if (!response.ok) {
+        const details =
+          data.details || data.error || `HTTP ${response.status}`;
+
+        throw new Error(
+          `${details}` +
+          (data.error_type ? ` (${data.error_type})` : "")
+        );
+      }
+
+      if (!data.result) {
+        throw new Error("Сервер не прислал результат.");
+      }
+
+      output.textContent = data.result;
+
+    } catch (error) {
+      output.textContent = "Не удалось обработать текст.";
+      output.classList.add("empty");
+
+      showError(
+        `Ошибка: ${error.message}\n\n` +
+        "Открой Runtime Logs в Vercel, если ошибка повторяется."
+      );
+
+      console.error("Transform error:", error);
+
+    } finally {
+      runButton.disabled = false;
+      runButton.textContent = "✦ Обработать текст";
+    }
+  }
+
+  input.addEventListener("input", () => {
+    $("counter").textContent =
+      `${input.value.length} / 12000`;
   });
-});
 
-input.addEventListener("input", () => {
-  counter.textContent = input.value.length + " / 20000";
-});
+  runButton.addEventListener("click", transform);
 
-function showError(message) {
-  notice.textContent = message;
-  notice.style.display = "block";
-}
-
-async function checkApi() {
-  try {
-    const r = await fetch(API_BASE + "/api/health");
-    const data = await r.json();
-    document.getElementById("status").textContent =
-      data.ai_configured ? "● ИИ ПОДКЛЮЧЁН" : "● НЕТ API-КЛЮЧА";
-  } catch (e) {
-    document.getElementById("status").textContent = "● ПРОВЕРЬ АДРЕС API";
-  }
-}
-checkApi();
-
-button.addEventListener("click", async () => {
-  const text = input.value.trim();
-
-  if (!text) {
-    showError("Сначала вставь текст.");
+  $("clear").addEventListener("click", () => {
+    input.value = "";
+    output.textContent = "Здесь появится обработанный текст.";
+    output.classList.add("empty");
+    $("counter").textContent = "0 / 12000";
+    clearError();
     input.focus();
-    return;
-  }
+  });
 
-  button.disabled = true;
-  button.textContent = "⏳ ИИ ОБРАБАТЫВАЕТ ТЕКСТ...";
-  notice.style.display = "none";
-  output.style.display = "none";
-
-  try {
-    const response = await fetch(API_BASE + "/api/transform", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({text: text, mode: currentMode})
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Ошибка API: " + response.status);
+  $("copy").addEventListener("click", async () => {
+    if (output.classList.contains("empty")) {
+      showError("Сначала обработай текст.");
+      return;
     }
 
-    if (!data.result || !data.result.trim()) {
-      throw new Error("ИИ вернул пустой ответ. Попробуй ещё раз.");
+    try {
+      await navigator.clipboard.writeText(output.textContent);
+      $("copy").textContent = "Скопировано ✓";
+
+      setTimeout(() => {
+        $("copy").textContent = "Копировать";
+      }, 1500);
+    } catch {
+      showError("Не удалось скопировать. Выдели результат вручную.");
     }
+  });
 
-    result.textContent = data.result.trim();
-    output.style.display = "block";
-    output.scrollIntoView({behavior:"smooth", block:"nearest"});
-  } catch (error) {
-    showError("Не удалось обработать текст: " + error.message +
-      ". Проверь адрес API и деплой Vercel.");
-  } finally {
-    button.disabled = false;
-    button.textContent = "▶ ОБРАБОТАТЬ ТЕКСТ";
-  }
-});
+  input.addEventListener("keydown", event => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      transform();
+    }
+  });
 
-document.getElementById("copyBtn").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(result.textContent);
-    document.getElementById("copyBtn").textContent = "СКОПИРОВАНО ✓";
-  } catch (e) {
-    showError("Не удалось скопировать автоматически. Выдели результат и скопируй вручную.");
-  }
-  setTimeout(() => {
-    document.getElementById("copyBtn").textContent = "КОПИРОВАТЬ";
-  }, 1500);
-});
+  checkAPI();
+})();
 </script>
 </body>
 </html>
+
